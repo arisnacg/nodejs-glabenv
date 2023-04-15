@@ -2,6 +2,8 @@
 
 CLI to export and synchronize Gitlab environment variables
 
+![Demo](img/demo.gif)
+
 ## How To Install 🚀
 
 Via NPM:
