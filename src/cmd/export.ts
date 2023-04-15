@@ -4,7 +4,7 @@ import {
   getProjectByRepoURL,
   getProjectEnvVars,
 } from "../lib/gitlab";
-import { ExportOptions } from "../interfaces/gitlab.interface";
+import { ExportOptions } from "../interfaces/index.interface";
 import { writeOutputToFile } from "../utils";
 
 const exportEnv = async (options: ExportOptions) => {

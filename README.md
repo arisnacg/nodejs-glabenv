@@ -89,9 +89,23 @@ glabenv export -f json --pretty
 # ...
 ```
 
+### Export
+
+To synchronize environment variables from your local env file to a GitLab repository:
+
+```bash
+glabenv sync --filepath env.example
+```
+
+Synchronization behavior:
+
+- Create a new variable if there is a key in the local env file that doesn't exist in GitLab env variables.
+- Update the variable if the value of the key in the local env file doesn't match the one in GitLab env variables.
+- Delete the variable if there is a key in GitLab env variables that doesn't exist in the local env file.
+
 ## What's Next? 🤔
 
-- [ ] Synchronize local file to Gitlab repostiory
+- [x] Synchronize local file to Gitlab repostiory
 - [ ] Export environment variables from Gitlab Admin
 - [ ] Export environment variables from Gitlab group
 
@@ -99,3 +113,6 @@ glabenv export -f json --pretty
 
 - https://docs.gitlab.com/ee/api/projects.html#get-single-project
 - https://docs.gitlab.com/ee/api/project_level_variables.html#list-project-variables
+- https://docs.gitlab.com/ee/api/project_level_variables.html#create-a-variable
+- https://docs.gitlab.com/ee/api/project_level_variables.html#update-a-variable
+- https://docs.gitlab.com/ee/api/project_level_variables.html#delete-a-variable

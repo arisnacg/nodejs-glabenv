@@ -5,13 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = require("commander");
-const export_1 = __importDefault(require("./cmd/export"));
 const utils_1 = require("./utils");
 const program = new commander_1.Command();
+const export_1 = __importDefault(require("./cmd/export"));
+const sync_1 = __importDefault(require("./cmd/sync"));
 program
     .name("GLABENV")
     .description(`CLI to synchronize Gitlab environment variables`)
-    .version("1.0.1");
+    .version("1.0.2");
 program
     .command("export")
     .option("-t, --token <string>", "Gitlab access token")
@@ -22,6 +23,15 @@ program
     .description("export gitlab repo env variables to file")
     .action((options) => {
     (0, export_1.default)(options).catch((err) => (0, utils_1.handleError)(err));
+});
+program
+    .command("sync")
+    .option("-t, --token <string>", "Gitlab access token")
+    .option("-r, --repoURL <url>", "repository url")
+    .requiredOption("--filepath <path>, env variables file path")
+    .description("sync env variables in a file to Gitlab repository")
+    .action((options) => {
+    (0, sync_1.default)(options).catch((err) => (0, utils_1.handleError)(err));
 });
 program.parse();
 //# sourceMappingURL=index.js.map

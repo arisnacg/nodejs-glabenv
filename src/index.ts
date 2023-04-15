@@ -1,15 +1,16 @@
 #! /usr/bin/env node
 
 import { Command } from "commander";
-import exportEnv from "./cmd/export";
 import { handleError } from "./utils";
-import { ExportOptions } from "./interfaces/gitlab.interface";
+import { ExportOptions, SyncOptions } from "./interfaces/index.interface";
 const program = new Command();
+import exportEnv from "./cmd/export";
+import syncEnv from "./cmd/sync";
 
 program
   .name("GLABENV")
   .description(`CLI to synchronize Gitlab environment variables`)
-  .version("1.0.2");
+  .version("1.1.0");
 
 program
   .command("export")
@@ -25,6 +26,16 @@ program
   .description("export gitlab repo env variables to file")
   .action((options: ExportOptions) => {
     exportEnv(options).catch((err) => handleError(err));
+  });
+
+program
+  .command("sync")
+  .option("-t, --token <string>", "Gitlab access token")
+  .option("-r, --repoURL <url>", "repository url")
+  .requiredOption("--filepath <path>, env variables file path")
+  .description("sync env variables in a file to Gitlab repository")
+  .action((options: SyncOptions) => {
+    syncEnv(options).catch((err) => handleError(err));
   });
 
 program.parse();

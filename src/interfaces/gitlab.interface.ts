@@ -1,16 +1,3 @@
-export interface ExportOptions {
-  repoURL: string;
-  token?: string;
-  format: string;
-  output?: string;
-  pretty: boolean;
-}
-
-export interface ExportArg {
-  repoURL?: string;
-  token?: string;
-}
-
 export interface Namespace {
   id: number;
   name: string;
