@@ -24,8 +24,7 @@ const exportEnv = (options) => __awaiter(void 0, void 0, void 0, function* () {
         }
         else
             repoURL = options.repoURL;
-        const project = yield (0, gitlab_1.getProjectByRepoURL)(token, repoURL);
-        const envVars = yield (0, gitlab_1.getProjectEnvVars)(token, repoURL, project.id);
+        const envVars = yield (0, gitlab_1.getProjectEnvVars)(token, repoURL);
         // set output based on format
         let outputStr = ``;
         if (options.format === "json") {

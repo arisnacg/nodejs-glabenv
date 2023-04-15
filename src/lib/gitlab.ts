@@ -4,11 +4,11 @@ import { GitlabEnvVar, GitlabProject } from "../interfaces/gitlab.interface";
 
 export const getProjectEnvVars = async (
   accessToken: string,
-  repoURL: string,
-  projectID: number
+  repoURL: string
 ): Promise<GitlabEnvVar[]> => {
   const hostname = getGitlabHost(repoURL);
-  const endpoint = `${hostname}/api/v4/projects/${projectID}/variables`;
+  const encodedPath = getProjectEncodedPath(repoURL);
+  const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables`;
   return await gitlabGetRequest(endpoint, accessToken);
 };
 

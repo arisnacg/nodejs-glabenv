@@ -9,7 +9,7 @@ const program = new Command();
 program
   .name("GLABENV")
   .description(`CLI to synchronize Gitlab environment variables`)
-  .version("1.0.1");
+  .version("1.0.2");
 
 program
   .command("export")

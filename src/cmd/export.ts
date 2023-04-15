@@ -17,8 +17,7 @@ const exportEnv = async (options: ExportOptions) => {
     if (options.repoURL === undefined) {
       repoURL = getGitlabRepoFromEnv();
     } else repoURL = options.repoURL;
-    const project = await getProjectByRepoURL(token, repoURL);
-    const envVars = await getProjectEnvVars(token, repoURL, project.id);
+    const envVars = await getProjectEnvVars(token, repoURL);
     // set output based on format
     let outputStr = ``;
     if (options.format === "json") {

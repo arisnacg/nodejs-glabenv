@@ -15,9 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProjectEncodedPath = exports.getGitlabHost = exports.getGitlabRepoFromEnv = exports.getGitlabTokenFromEnv = exports.gitlabGetRequest = exports.getProjectByRepoURL = exports.getProjectEnvVars = void 0;
 const axios_1 = __importDefault(require("axios"));
 const utils_1 = require("../utils");
-const getProjectEnvVars = (accessToken, repoURL, projectID) => __awaiter(void 0, void 0, void 0, function* () {
+const getProjectEnvVars = (accessToken, repoURL) => __awaiter(void 0, void 0, void 0, function* () {
     const hostname = (0, exports.getGitlabHost)(repoURL);
-    const endpoint = `${hostname}/api/v4/projects/${projectID}/variables`;
+    const encodedPath = (0, exports.getProjectEncodedPath)(repoURL);
+    const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables`;
     return yield (0, exports.gitlabGetRequest)(endpoint, accessToken);
 });
 exports.getProjectEnvVars = getProjectEnvVars;

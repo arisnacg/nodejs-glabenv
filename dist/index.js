@@ -11,7 +11,7 @@ const program = new commander_1.Command();
 program
     .name("GLABENV")
     .description(`CLI to synchronize Gitlab environment variables`)
-    .version("1.1.1");
+    .version("1.0.1");
 program
     .command("export")
     .option("-t, --token <string>", "Gitlab access token")
