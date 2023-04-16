@@ -89,7 +89,7 @@ glabenv export -f json --pretty
 # ...
 ```
 
-### Export
+### Sync
 
 To synchronize environment variables from your local env file to a GitLab repository:
 
@@ -102,6 +102,8 @@ Synchronization behavior:
 - Create a new variable if there is a key in the local env file that doesn't exist in GitLab env variables.
 - Update the variable if the value of the key in the local env file doesn't match the one in GitLab env variables.
 - Delete the variable if there is a key in GitLab env variables that doesn't exist in the local env file.
+
+You can see the output of this command on the demo gif above
 
 ## What's Next? 🤔
 
