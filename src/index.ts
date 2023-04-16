@@ -10,7 +10,7 @@ import syncEnv from "./cmd/sync";
 program
   .name("GLABENV")
   .description(`CLI to synchronize Gitlab environment variables`)
-  .version("1.1.0");
+  .version("1.1.1");
 
 program
   .command("export")
