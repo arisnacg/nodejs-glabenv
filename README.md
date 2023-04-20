@@ -17,7 +17,7 @@ npm install -g glabenv
 Set the GitLab access token with the `--token` or `-t` option:
 
 ```bash
-glabenv --token <YOUR_GITLAB_ACCESS_TOKEN>
+glabenv [COMMAND] --token <YOUR_GITLAB_ACCESS_TOKEN>
 ```
 
 Alternatively, you can use an environment variable:
