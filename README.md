@@ -12,6 +12,12 @@ Via NPM:
 npm install -g glabenv
 ```
 
+Via Yarn:
+
+```bash
+yarn global add glabenv
+```
+
 ## Gitlab Authentication 🔐
 
 Set the GitLab access token with the `--token` or `-t` option:
@@ -105,11 +111,51 @@ Synchronization behavior:
 
 You can see the output of this command on the demo gif above
 
-## What's Next? 🤔
+## Export and Sync Gitlab Group Env Variables 👥
 
-- [x] Synchronize local file to Gitlab repostiory
-- [ ] Export environment variables from Gitlab Admin
-- [ ] Export environment variables from Gitlab group
+You can export or synchronize Gitlab group environment variables by set the repository URL with your Gitlab group URL and add `-l` or `--level` option with value: `group`.
+
+Example for `export` command:
+
+```
+glabenv export -r https://gitlab.example.com/demo-group/demo-subgroup --level group
+```
+
+Example for `sync` command:
+
+```
+glabenv sync --filepath env.example -r https://gitlab.example.com/demo-group/demo-subgroup --level group
+```
+
+Alternatively, you can use environment variables:
+
+```bash
+export GLABENV_REPOSITORY=https://gitlab.example.com/demo-group/demo-subgroup
+export GLABENV_LEVEL=group
+```
+
+## Export and Sync Gitlab Instance Env Variables 👨🏻‍💼
+
+You can export or synchronize Gitlab instance environment variables by set the repository URL with your Gitlab host URL and add `-l` or `--level` option with value: `instance`.
+
+Example for `export` command:
+
+```
+glabenv export -r https://gitlab.example.com --level instance
+```
+
+Example for `sync` command:
+
+```
+glabenv sync --filepath env.example -r https://gitlab.example.com --level instance
+```
+
+Alternatively, you can use environment variables:
+
+```bash
+export GLABENV_REPOSITORY=https://gitlab.example.com
+export GLABENV_LEVEL=instance
+```
 
 ## References 📝
 
