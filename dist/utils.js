@@ -7,6 +7,7 @@ exports.parseDataFromEnv = exports.writeOutputToFile = exports.getHostname = exp
 const fs_1 = __importDefault(require("fs"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const handleError = (err) => {
+    console.log(err);
     if (err instanceof Error)
         console.error(`[Error] ${err.message}`);
     else

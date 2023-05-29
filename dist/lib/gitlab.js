@@ -16,13 +16,13 @@ exports.getProjectEncodedPath = exports.getGitlabHost = exports.getLevelFromEnv 
 const axios_1 = __importDefault(require("axios"));
 const utils_1 = require("../utils");
 const const_1 = require("../const");
-const createGitlabEnvVariables = (accessToken, repoURL, envVars) => __awaiter(void 0, void 0, void 0, function* () {
+const createGitlabEnvVariables = (accessToken, repoURL, level, envVars) => __awaiter(void 0, void 0, void 0, function* () {
     const hostname = (0, exports.getGitlabHost)(repoURL);
     const encodedPath = (0, exports.getProjectEncodedPath)(repoURL);
     for (let i = 0; i < envVars.length; i++) {
         const { key, value } = envVars[i];
         try {
-            const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables`;
+            const endpoint = getEndpointByLevel(level, hostname, encodedPath);
             yield (0, exports.gitlabPOSTRequest)(endpoint, accessToken, { key, value });
             console.log(`${const_1.ACTION_TYPE.create}${key} - success`);
         }
@@ -32,13 +32,13 @@ const createGitlabEnvVariables = (accessToken, repoURL, envVars) => __awaiter(vo
     }
 });
 exports.createGitlabEnvVariables = createGitlabEnvVariables;
-const deleteGitlabEnvVariables = (accessToken, repoURL, envVars) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteGitlabEnvVariables = (accessToken, repoURL, level, envVars) => __awaiter(void 0, void 0, void 0, function* () {
     const hostname = (0, exports.getGitlabHost)(repoURL);
     const encodedPath = (0, exports.getProjectEncodedPath)(repoURL);
     for (let i = 0; i < envVars.length; i++) {
         const { key } = envVars[i];
         try {
-            const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables/${key}`;
+            const endpoint = getEndpointByLevel(level, hostname, encodedPath) + `/${key}`;
             yield (0, exports.gitlabDELETERequest)(endpoint, accessToken);
             console.log(`${const_1.ACTION_TYPE.delete}${key} - success`);
         }
@@ -48,13 +48,13 @@ const deleteGitlabEnvVariables = (accessToken, repoURL, envVars) => __awaiter(vo
     }
 });
 exports.deleteGitlabEnvVariables = deleteGitlabEnvVariables;
-const updateGitlabEnvVariables = (accessToken, repoURL, envVars) => __awaiter(void 0, void 0, void 0, function* () {
+const updateGitlabEnvVariables = (accessToken, repoURL, level, envVars) => __awaiter(void 0, void 0, void 0, function* () {
     const hostname = (0, exports.getGitlabHost)(repoURL);
     const encodedPath = (0, exports.getProjectEncodedPath)(repoURL);
     for (let i = 0; i < envVars.length; i++) {
         const { key, value } = envVars[i];
         try {
-            const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables/${key}`;
+            const endpoint = getEndpointByLevel(level, hostname, encodedPath) + `/${key}`;
             yield (0, exports.gitlabPUTRequest)(endpoint, accessToken, { value });
             console.log(`${const_1.ACTION_TYPE.update}${key} - success`);
         }
@@ -80,28 +80,10 @@ const changeToGroupEndpoint = (hostname, encodedPath) => {
     return `${hostname}/api/v4/groups/${encodedPath}/variables`;
 };
 const getGitlabEnvVars = (accessToken, repoURL, level = "project") => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     const hostname = (0, exports.getGitlabHost)(repoURL);
     const encodedPath = (0, exports.getProjectEncodedPath)(repoURL);
     let endpoint = getEndpointByLevel(level, hostname, encodedPath);
-    try {
-        return yield (0, exports.gitlabGETRequest)(endpoint, accessToken);
-    }
-    catch (err) {
-        if (axios_1.default.isAxiosError(err)) {
-            const axiosErr = err;
-            if (((_a = axiosErr.response) === null || _a === void 0 ? void 0 : _a.status) === 404 && level === "group") {
-                endpoint = changeToGroupEndpoint(hostname, encodedPath);
-                return yield (0, exports.gitlabGETRequest)(endpoint, accessToken);
-            }
-            else {
-                throw err;
-            }
-        }
-        else {
-            throw err;
-        }
-    }
+    return yield (0, exports.gitlabGETRequest)(endpoint, accessToken);
 });
 exports.getGitlabEnvVars = getGitlabEnvVars;
 const gitlabGETRequest = (endpoint, accessToken, params) => __awaiter(void 0, void 0, void 0, function* () {

@@ -1,4 +1,4 @@
-import { EnvVar, SyncOptions } from "../interfaces/index.interface";
+import { EnvLevel, EnvVar, SyncOptions } from "../interfaces/index.interface";
 import {
   getGitlabRepoFromEnv,
   getGitlabTokenFromEnv,
@@ -6,6 +6,7 @@ import {
   updateGitlabEnvVariables,
   deleteGitlabEnvVariables,
   createGitlabEnvVariables,
+  getLevelFromEnv,
 } from "../lib/gitlab";
 import { parseDataFromEnv } from "../utils";
 
@@ -13,6 +14,7 @@ const syncEnv = async (options: SyncOptions) => {
   try {
     let token = "",
       repoURL = "",
+      level: EnvLevel,
       filepath = options.filepath;
     if (options.token === undefined) {
       token = getGitlabTokenFromEnv();
@@ -20,10 +22,13 @@ const syncEnv = async (options: SyncOptions) => {
     if (options.repoURL === undefined) {
       repoURL = getGitlabRepoFromEnv();
     } else repoURL = options.repoURL;
+    if (options.level === undefined) {
+      level = getLevelFromEnv();
+    } else level = options.level;
     // get env file variables
     const envFileVars = parseDataFromEnv(options.filepath);
     // get env variables from Gitlab
-    const gitlabEnvVars = await getGitlabEnvVars(token, repoURL);
+    const gitlabEnvVars = await getGitlabEnvVars(token, repoURL, level);
     // synchronize env file variabes to Gitlab
     const updatedEnvVars: EnvVar[] = [];
     const deletedEnvVars: EnvVar[] = [];
@@ -53,11 +58,11 @@ const syncEnv = async (options: SyncOptions) => {
     });
     // console.log({ newEnvVars, updatedEnvVars, deletedEnvVars });
     if (newEnvVars.length > 0)
-      await createGitlabEnvVariables(token, repoURL, newEnvVars);
+      await createGitlabEnvVariables(token, repoURL, level, newEnvVars);
     if (updatedEnvVars.length > 0)
-      await updateGitlabEnvVariables(token, repoURL, updatedEnvVars);
+      await updateGitlabEnvVariables(token, repoURL, level, updatedEnvVars);
     if (deleteGitlabEnvVariables.length > 0)
-      await deleteGitlabEnvVariables(token, repoURL, deletedEnvVars);
+      await deleteGitlabEnvVariables(token, repoURL, level, deletedEnvVars);
     const modifiedCount =
       newEnvVars.length + updatedEnvVars.length + deletedEnvVars.length;
     if (modifiedCount === 0) console.log(`Already up-to-date`);

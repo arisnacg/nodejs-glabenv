@@ -36,6 +36,10 @@ program
   .command("sync")
   .option("-t, --token <string>", "Gitlab access token")
   .option("-r, --repoURL <url>", "repository url")
+  .option(
+    "-l, --level <string>",
+    "level of env variables: project | group | instance (default: project)"
+  )
   .requiredOption("--filepath <path>, env variables file path")
   .description("sync env variables in a file to Gitlab repository")
   .action((options: SyncOptions) => {

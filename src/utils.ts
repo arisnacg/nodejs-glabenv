@@ -2,6 +2,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 
 export const handleError = (err: unknown) => {
+  console.log(err);
   if (err instanceof Error) console.error(`[Error] ${err.message}`);
   else throw err;
 };

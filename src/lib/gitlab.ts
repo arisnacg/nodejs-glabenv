@@ -7,6 +7,7 @@ import { ACTION_TYPE } from "../const";
 export const createGitlabEnvVariables = async (
   accessToken: string,
   repoURL: string,
+  level: EnvLevel,
   envVars: EnvVar[]
 ) => {
   const hostname = getGitlabHost(repoURL);
@@ -14,7 +15,7 @@ export const createGitlabEnvVariables = async (
   for (let i = 0; i < envVars.length; i++) {
     const { key, value } = envVars[i];
     try {
-      const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables`;
+      const endpoint = getEndpointByLevel(level, hostname, encodedPath);
       await gitlabPOSTRequest(endpoint, accessToken, { key, value });
       console.log(`${ACTION_TYPE.create}${key} - success`);
     } catch (err) {
@@ -26,6 +27,7 @@ export const createGitlabEnvVariables = async (
 export const deleteGitlabEnvVariables = async (
   accessToken: string,
   repoURL: string,
+  level: EnvLevel,
   envVars: EnvVar[]
 ) => {
   const hostname = getGitlabHost(repoURL);
@@ -33,7 +35,8 @@ export const deleteGitlabEnvVariables = async (
   for (let i = 0; i < envVars.length; i++) {
     const { key } = envVars[i];
     try {
-      const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables/${key}`;
+      const endpoint =
+        getEndpointByLevel(level, hostname, encodedPath) + `/${key}`;
       await gitlabDELETERequest(endpoint, accessToken);
       console.log(`${ACTION_TYPE.delete}${key} - success`);
     } catch (err) {
@@ -45,6 +48,7 @@ export const deleteGitlabEnvVariables = async (
 export const updateGitlabEnvVariables = async (
   accessToken: string,
   repoURL: string,
+  level: EnvLevel,
   envVars: EnvVar[]
 ) => {
   const hostname = getGitlabHost(repoURL);
@@ -52,7 +56,8 @@ export const updateGitlabEnvVariables = async (
   for (let i = 0; i < envVars.length; i++) {
     const { key, value } = envVars[i];
     try {
-      const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables/${key}`;
+      const endpoint =
+        getEndpointByLevel(level, hostname, encodedPath) + `/${key}`;
       await gitlabPUTRequest(endpoint, accessToken, { value });
       console.log(`${ACTION_TYPE.update}${key} - success`);
     } catch (err) {

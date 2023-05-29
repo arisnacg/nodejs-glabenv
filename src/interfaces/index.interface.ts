@@ -9,6 +9,7 @@ export interface ExportOptions {
 }
 
 export interface SyncOptions {
+  level: EnvLevel;
   repoURL: string;
   token?: string;
   filepath: string;
