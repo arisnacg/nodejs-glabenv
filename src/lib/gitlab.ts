@@ -88,21 +88,7 @@ export const getGitlabEnvVars = async (
   const hostname = getGitlabHost(repoURL);
   const encodedPath = getProjectEncodedPath(repoURL);
   let endpoint = getEndpointByLevel(level, hostname, encodedPath);
-  try {
-    return await gitlabGETRequest(endpoint, accessToken);
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      const axiosErr = err as AxiosError;
-      if (axiosErr.response?.status === 404 && level === "group") {
-        endpoint = changeToGroupEndpoint(hostname, encodedPath);
-        return await gitlabGETRequest(endpoint, accessToken);
-      } else {
-        throw err;
-      }
-    } else {
-      throw err;
-    }
-  }
+  return await gitlabGETRequest(endpoint, accessToken);
 };
 
 export const gitlabGETRequest = async (
