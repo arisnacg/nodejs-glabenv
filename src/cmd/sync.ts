@@ -2,7 +2,7 @@ import { EnvVar, SyncOptions } from "../interfaces/index.interface";
 import {
   getGitlabRepoFromEnv,
   getGitlabTokenFromEnv,
-  getProjectEnvVars,
+  getGitlabEnvVars,
   updateGitlabEnvVariables,
   deleteGitlabEnvVariables,
   createGitlabEnvVariables,
@@ -23,7 +23,7 @@ const syncEnv = async (options: SyncOptions) => {
     // get env file variables
     const envFileVars = parseDataFromEnv(options.filepath);
     // get env variables from Gitlab
-    const gitlabEnvVars = await getProjectEnvVars(token, repoURL);
+    const gitlabEnvVars = await getGitlabEnvVars(token, repoURL);
     // synchronize env file variabes to Gitlab
     const updatedEnvVars: EnvVar[] = [];
     const deletedEnvVars: EnvVar[] = [];

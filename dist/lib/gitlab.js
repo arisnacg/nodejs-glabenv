@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProjectEncodedPath = exports.getGitlabHost = exports.getGitlabRepoFromEnv = exports.getGitlabTokenFromEnv = exports.gitlabPOSTRequest = exports.gitlabPUTRequest = exports.gitlabDELETERequest = exports.gitlabGETRequest = exports.getProjectByRepoURL = exports.getProjectEnvVars = exports.updateGitlabEnvVariables = exports.deleteGitlabEnvVariables = exports.createGitlabEnvVariables = void 0;
+exports.getProjectEncodedPath = exports.getGitlabHost = exports.getLevelFromEnv = exports.getGitlabRepoFromEnv = exports.getGitlabTokenFromEnv = exports.gitlabPOSTRequest = exports.gitlabPUTRequest = exports.gitlabDELETERequest = exports.gitlabGETRequest = exports.getGitlabEnvVars = exports.updateGitlabEnvVariables = exports.deleteGitlabEnvVariables = exports.createGitlabEnvVariables = void 0;
 const axios_1 = __importDefault(require("axios"));
 const utils_1 = require("../utils");
 const const_1 = require("../const");
@@ -64,20 +64,46 @@ const updateGitlabEnvVariables = (accessToken, repoURL, envVars) => __awaiter(vo
     }
 });
 exports.updateGitlabEnvVariables = updateGitlabEnvVariables;
-const getProjectEnvVars = (accessToken, repoURL) => __awaiter(void 0, void 0, void 0, function* () {
+const getEndpointByLevel = (level, hostname, encodedPath) => {
+    if (level === "project") {
+        return `${hostname}/api/v4/projects/${encodedPath}/variables`;
+    }
+    else if (level === "group") {
+        return `${hostname}/api/v4/groups/${encodedPath}/variables`;
+    }
+    else {
+        return `${hostname}/api/v4/admin/ci/variables`;
+    }
+};
+const changeToGroupEndpoint = (hostname, encodedPath) => {
+    encodedPath = encodedPath.split("%2F").slice(0, -1).join("%2F");
+    return `${hostname}/api/v4/groups/${encodedPath}/variables`;
+};
+const getGitlabEnvVars = (accessToken, repoURL, level = "project") => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const hostname = (0, exports.getGitlabHost)(repoURL);
     const encodedPath = (0, exports.getProjectEncodedPath)(repoURL);
-    const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables`;
-    return yield (0, exports.gitlabGETRequest)(endpoint, accessToken);
+    let endpoint = getEndpointByLevel(level, hostname, encodedPath);
+    try {
+        return yield (0, exports.gitlabGETRequest)(endpoint, accessToken);
+    }
+    catch (err) {
+        if (axios_1.default.isAxiosError(err)) {
+            const axiosErr = err;
+            if (((_a = axiosErr.response) === null || _a === void 0 ? void 0 : _a.status) === 404 && level === "group") {
+                endpoint = changeToGroupEndpoint(hostname, encodedPath);
+                return yield (0, exports.gitlabGETRequest)(endpoint, accessToken);
+            }
+            else {
+                throw err;
+            }
+        }
+        else {
+            throw err;
+        }
+    }
 });
-exports.getProjectEnvVars = getProjectEnvVars;
-const getProjectByRepoURL = (accessToken, repoURL) => __awaiter(void 0, void 0, void 0, function* () {
-    const hostname = (0, exports.getGitlabHost)(repoURL);
-    const encodedPath = (0, exports.getProjectEncodedPath)(repoURL);
-    const endpoint = `${hostname}/api/v4/projects/${encodedPath}`;
-    return yield (0, exports.gitlabGETRequest)(endpoint, accessToken);
-});
-exports.getProjectByRepoURL = getProjectByRepoURL;
+exports.getGitlabEnvVars = getGitlabEnvVars;
 const gitlabGETRequest = (endpoint, accessToken, params) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield axios_1.default.get(endpoint, {
@@ -151,10 +177,23 @@ const getGitlabRepoFromEnv = () => {
         return repoURL;
     }
     else {
-        throw Error(`Gitlab repository URL is required`);
+        throw Error(`Gitlab repository/group/host URL is required`);
     }
 };
 exports.getGitlabRepoFromEnv = getGitlabRepoFromEnv;
+const getLevelFromEnv = () => {
+    const level = process.env.GLABENV_LEVEL;
+    if (level !== undefined) {
+        if (level === "project" || level === "group" || level === "instance") {
+            return level;
+        }
+        else {
+            throw Error(`Level only can be assigned with project | group | instance`);
+        }
+    }
+    return `project`;
+};
+exports.getLevelFromEnv = getLevelFromEnv;
 const getGitlabHost = (repoURL) => {
     return (0, utils_1.getHostname)(repoURL);
 };

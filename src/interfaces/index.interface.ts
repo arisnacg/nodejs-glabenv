@@ -1,5 +1,7 @@
+export type EnvLevel = "project" | "group" | "instance";
 export interface ExportOptions {
   repoURL: string;
+  level: EnvLevel;
   token?: string;
   format: string;
   output?: string;

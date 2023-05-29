@@ -27,7 +27,7 @@ const syncEnv = (options) => __awaiter(void 0, void 0, void 0, function* () {
         // get env file variables
         const envFileVars = (0, utils_1.parseDataFromEnv)(options.filepath);
         // get env variables from Gitlab
-        const gitlabEnvVars = yield (0, gitlab_1.getProjectEnvVars)(token, repoURL);
+        const gitlabEnvVars = yield (0, gitlab_1.getGitlabEnvVars)(token, repoURL);
         // synchronize env file variabes to Gitlab
         const updatedEnvVars = [];
         const deletedEnvVars = [];

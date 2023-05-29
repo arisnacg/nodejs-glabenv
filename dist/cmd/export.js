@@ -13,7 +13,7 @@ const gitlab_1 = require("../lib/gitlab");
 const utils_1 = require("../utils");
 const exportEnv = (options) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let token = "", repoURL = "";
+        let token = "", repoURL = "", level;
         if (options.token === undefined) {
             token = (0, gitlab_1.getGitlabTokenFromEnv)();
         }
@@ -24,7 +24,12 @@ const exportEnv = (options) => __awaiter(void 0, void 0, void 0, function* () {
         }
         else
             repoURL = options.repoURL;
-        const envVars = yield (0, gitlab_1.getProjectEnvVars)(token, repoURL);
+        if (options.level === undefined) {
+            level = (0, gitlab_1.getLevelFromEnv)();
+        }
+        else
+            level = options.level;
+        const envVars = yield (0, gitlab_1.getGitlabEnvVars)(token, repoURL, level);
         // set output based on format
         let outputStr = ``;
         if (options.format === "json") {

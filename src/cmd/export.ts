@@ -1,23 +1,28 @@
 import {
   getGitlabRepoFromEnv,
   getGitlabTokenFromEnv,
-  getProjectByRepoURL,
-  getProjectEnvVars,
+  getGitlabEnvVars,
+  getLevelFromEnv,
 } from "../lib/gitlab";
-import { ExportOptions } from "../interfaces/index.interface";
+import { EnvLevel, ExportOptions } from "../interfaces/index.interface";
 import { writeOutputToFile } from "../utils";
 
 const exportEnv = async (options: ExportOptions) => {
   try {
     let token = "",
-      repoURL = "";
+      repoURL = "",
+      level: EnvLevel;
     if (options.token === undefined) {
       token = getGitlabTokenFromEnv();
     } else token = options.token;
     if (options.repoURL === undefined) {
       repoURL = getGitlabRepoFromEnv();
     } else repoURL = options.repoURL;
-    const envVars = await getProjectEnvVars(token, repoURL);
+    if (options.level === undefined) {
+      level = getLevelFromEnv();
+    } else level = options.level;
+
+    const envVars = await getGitlabEnvVars(token, repoURL, level);
     // set output based on format
     let outputStr = ``;
     if (options.format === "json") {

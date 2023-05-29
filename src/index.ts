@@ -15,11 +15,15 @@ program
 program
   .command("export")
   .option("-t, --token <string>", "Gitlab access token")
-  .option("-r, --repoURL <url>", "repository url")
+  .option("-r, --repoURL <url>", "Gitlab repository url")
   .option(
     "-f, --format <string>",
-    'output format: "env" or "json" (default env)',
+    "output format: env | json (default: env)",
     "env"
+  )
+  .option(
+    "-l, --level <string>",
+    "level of env variables: project | group | instance (default: project)"
   )
   .option("-o, --output <path>", "output filepath")
   .option("--pretty", "print JSON ouput in pretty format")

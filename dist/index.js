@@ -12,12 +12,13 @@ const sync_1 = __importDefault(require("./cmd/sync"));
 program
     .name("GLABENV")
     .description(`CLI to synchronize Gitlab environment variables`)
-    .version("1.0.2");
+    .version("1.1.2");
 program
     .command("export")
     .option("-t, --token <string>", "Gitlab access token")
-    .option("-r, --repoURL <url>", "repository url")
-    .option("-f, --format <string>", 'output format: "env" or "json" (default env)', "env")
+    .option("-r, --repoURL <url>", "Gitlab repository url")
+    .option("-f, --format <string>", "output format: env | json (default: env)", "env")
+    .option("-l, --level <string>", "level of env variables: project | group | instance (default: project)")
     .option("-o, --output <path>", "output filepath")
     .option("--pretty", "print JSON ouput in pretty format")
     .description("export gitlab repo env variables to file")

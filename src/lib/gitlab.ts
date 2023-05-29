@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { getHostname } from "../utils";
 import { GitlabEnvVar, GitlabProject } from "../interfaces/gitlab.interface";
-import { EnvVar } from "../interfaces/index.interface";
+import { EnvLevel, EnvVar } from "../interfaces/index.interface";
 import { ACTION_TYPE } from "../const";
 
 export const createGitlabEnvVariables = async (
@@ -61,24 +61,48 @@ export const updateGitlabEnvVariables = async (
   }
 };
 
-export const getProjectEnvVars = async (
+const getEndpointByLevel = (
+  level: EnvLevel,
+  hostname: string,
+  encodedPath: string
+) => {
+  if (level === "project") {
+    return `${hostname}/api/v4/projects/${encodedPath}/variables`;
+  } else if (level === "group") {
+    return `${hostname}/api/v4/groups/${encodedPath}/variables`;
+  } else {
+    return `${hostname}/api/v4/admin/ci/variables`;
+  }
+};
+
+const changeToGroupEndpoint = (hostname: string, encodedPath: string) => {
+  encodedPath = encodedPath.split("%2F").slice(0, -1).join("%2F");
+  return `${hostname}/api/v4/groups/${encodedPath}/variables`;
+};
+
+export const getGitlabEnvVars = async (
   accessToken: string,
-  repoURL: string
+  repoURL: string,
+  level: EnvLevel = "project"
 ): Promise<GitlabEnvVar[]> => {
   const hostname = getGitlabHost(repoURL);
   const encodedPath = getProjectEncodedPath(repoURL);
-  const endpoint = `${hostname}/api/v4/projects/${encodedPath}/variables`;
-  return await gitlabGETRequest(endpoint, accessToken);
-};
-
-export const getProjectByRepoURL = async (
-  accessToken: string,
-  repoURL: string
-): Promise<GitlabProject> => {
-  const hostname = getGitlabHost(repoURL);
-  const encodedPath = getProjectEncodedPath(repoURL);
-  const endpoint = `${hostname}/api/v4/projects/${encodedPath}`;
-  return await gitlabGETRequest(endpoint, accessToken);
+  let endpoint = getEndpointByLevel(level, hostname, encodedPath);
+  try {
+    return await gitlabGETRequest(endpoint, accessToken);
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      const axiosErr = err as AxiosError;
+      if (axiosErr.response?.status === 404 && level === "group") {
+        endpoint = changeToGroupEndpoint(hostname, encodedPath);
+        return await gitlabGETRequest(endpoint, accessToken);
+      } else {
+        throw err;
+      }
+    } else {
+      throw err;
+    }
+  }
 };
 
 export const gitlabGETRequest = async (
@@ -163,8 +187,20 @@ export const getGitlabRepoFromEnv = () => {
   if (repoURL) {
     return repoURL;
   } else {
-    throw Error(`Gitlab repository URL is required`);
+    throw Error(`Gitlab repository/group/host URL is required`);
   }
+};
+
+export const getLevelFromEnv = (): EnvLevel => {
+  const level = process.env.GLABENV_LEVEL;
+  if (level !== undefined) {
+    if (level === "project" || level === "group" || level === "instance") {
+      return level;
+    } else {
+      throw Error(`Level only can be assigned with project | group | instance`);
+    }
+  }
+  return `project`;
 };
 
 export const getGitlabHost = (repoURL: string) => {
