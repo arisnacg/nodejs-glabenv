@@ -2,7 +2,7 @@
   "name": "glabenv",
   "description": "CLI to export and synchronize Gitlab environment variables",
   "repository": "https://github.com/arisnacg/nodejs-glabenv.git",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "main": "dist/index.js",
   "bin": {
     "glabenv": "dist/index.js"
