@@ -113,8 +113,6 @@ You can see the output of this command on the demo gif above
 
 ## References 📝
 
-- https://docs.gitlab.com/ee/api/projects.html#get-single-project
-- https://docs.gitlab.com/ee/api/project_level_variables.html#list-project-variables
-- https://docs.gitlab.com/ee/api/project_level_variables.html#create-a-variable
-- https://docs.gitlab.com/ee/api/project_level_variables.html#update-a-variable
-- https://docs.gitlab.com/ee/api/project_level_variables.html#delete-a-variable
+- https://docs.gitlab.com/ee/api/project_level_variables.html
+- https://docs.gitlab.com/ee/api/group_level_variables.html
+- https://docs.gitlab.com/ee/api/instance_level_ci_variables.html
