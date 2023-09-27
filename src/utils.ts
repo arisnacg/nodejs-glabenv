@@ -8,8 +8,8 @@ export const handleError = (err: unknown) => {
 };
 
 export const getHostname = (url: string) => {
-  const { protocol, hostname } = new URL(url);
-  return protocol + "//" + hostname;
+  const { protocol, host } = new URL(url);
+  return protocol + "//" + host;
 };
 
 export const writeOutputToFile = (path: string, data: string) => {
